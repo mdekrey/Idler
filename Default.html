@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="customIdler">
+<head>
+    <title></title>
+    <script src="scripts/lib/angular/angular.min.js"></script>
+    <script src="scripts/lib/lodash/lodash.min.js"></script>
+    <script src="scripts/framework/idler.js"></script>
+    <script src="scripts/controller.js"></script>
+    <style>
+        .enabled {
+            background-color: #ccf;
+        }
+    </style>
+</head>
+<body ng-controller="mainController as ctrl">
+    <button ng-click="ctrl.click()">Click!</button>
+    <div>
+        <dl>
+            <dt>Money</dt>
+            <dd>${{ctrl.inventory.money | displayNumber}}</dd>
+            <dt>Money/tick</dt>
+            <dd>${{(ctrl.inventory['1st Derivative']*0.05) | displayNumber}}</dd>
+            <dt>Proofs</dt>
+            <dd>{{ctrl.inventory.proof | displayNumber}}</dd>
+            <dt>Proofs/tick</dt>
+            <dd>${{(ctrl.inventory['Combinatorics']*0.05) | displayNumber}}</dd>
+            <dt>Cost/proof</dt>
+            <dd>
+                <span ng-repeat="(costKey, costNumber) in ctrl.costOf('proof')" ng-init="costDef = ctrl.definition(costKey)">
+                    {{costDef.costDisplay.pre}}{{costNumber | displayNumber}}{{costDef.costDisplay.post}}
+                    <span ng-if="!$last">and</span>
+                </span>
+            </dd>
+            <dt>Money/click</dt>
+            <dd>${{(1+ctrl.inventory.HighSchooler*0.1) | displayNumber}}</dd>
+        </dl>
+    </div>
+
+    <div>
+        <span ng-repeat="key in ctrl.displayedInventory" ng-init="def = ctrl.definition(key)">
+            <button ng-click="ctrl.buy(key)" ng-class="{enabled:ctrl.canBuy(key)}">
+                <h3>{{def.name}}</h3>
+                <p>
+                    {{def.description}}:
+                    costs
+                    <span ng-repeat="(costKey, costNumber) in ctrl.costOf(key)" ng-init="costDef = ctrl.definition(costKey)">
+                        {{costDef.costDisplay.pre}}{{costNumber | displayNumber}}{{costDef.costDisplay.post}}
+                        <span ng-if="!$last">and</span>
+                    </span>
+                </p>
+                <p>Owned: {{ctrl.inventory[key] | displayNumber}} ({{ctrl.purchased[key] | displayNumber}})</p>
+            </button>
+        </span>
+    </div>
+    <pre>{{ctrl.inventory | json}}</pre>
+</body>
+</html>
